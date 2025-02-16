@@ -5,35 +5,14 @@ from lexererr import *
 }
 
 @lexer::members {
-    int lastTokenType = 0;
+    self.lastTokenType = 0;
 
-    def emit(self):
-        tk = self.type
-        if tk == self.NL: 
-            lst = [self.ID, self.RETURN, self.CONTINUE, self.BREAK, self.R_PAREN, self.R_CURLY, self.R_BRACKET, self.INT, self.FLOAT, self.BOOLEAN, self.STRING, self.INT_LIT, self.FLOAT_LIT, self.STRING_LIT, self.TRUE, self.FALSE]
-            if self.lastTokenType == self.ID: 
-                self.type = self.SEMICOLON
-                self.lastTokenType = self.SEMICOLON
-                self.text = ";" 
-                return super().emit()
-            else: 
-                return None
-        elif tk == self.UNCLOSE_STRING:       
-            result = super().emit();
-            text = result.text
-            if text.endswith("\r\n"):
-                text = text[:-2]  # Remove Windows newline
-            elif text.endswith("\n"):
-                text = text[:-1]  # Remove Unix newline
-            raise UncloseString(text);
-        elif tk == self.ILLEGAL_ESCAPE:
-            result = super().emit();
-            raise IllegalEscape(result.text);
-        elif tk == self.ERROR_CHAR:
-            result = super().emit();
-            raise ErrorToken(result.text); 
-        else:
-            return super().emit();
+    def cust_emit():
+        tk =  super(MiniGoLexer,self).emit()
+        self.lastTokenType = tk.type
+        return super(MiniGoLexer,self).emit();
+
+    self.emit = cust_emit
 }
 
 options{
@@ -48,19 +27,19 @@ declList: decl SEMICOLON declList | decl;
 decl: constDecl | varDecl | typeDecl | funcDecl | methodDecl;
 
 constDecl: CONST ID INIT expression;
-varDecl: VAR ID type? (INIT expression)?;
+varDecl: VAR ID goType? (INIT expression)?;
 typeDecl: TYPE ID (structType | interfaceType);
-funcDecl: FUNC ID L_CURLY paramsList R_CURLY type? blockStmt;
+funcDecl: FUNC ID L_CURLY paramsList R_CURLY goType? blockStmt;
 methodDecl:
-	FUNC receiver ID L_CURLY paramsList R_CURLY type? blockStmt;
+	FUNC receiver ID L_CURLY paramsList R_CURLY goType? blockStmt;
 paramsList: paramPrime |;
 paramPrime: param COMMA paramPrime | param;
-param: identifierList type;
+param: identifierList goType;
 receiver: L_PAREN ID ID R_PAREN;
 
 // array type
-arrayType: L_BRACKET (INT_LIT | ID) R_BRACKET type;
-type: primType | compType | arrayType | userDefType;
+arrayType: L_BRACKET (INT_LIT | ID) R_BRACKET goType;
+goType: primType | compType | arrayType | userDefType;
 
 primType: STRING | INT | FLOAT | BOOLEAN;
 compType: STRUCT | INTERFACE;
@@ -69,7 +48,7 @@ userDefType: ID;
 // struct type not finished need to change to list of struct field
 structType: STRUCT L_CURLY fieldList R_CURLY;
 fieldList: field SEMICOLON fieldList | field;
-field: ID type;
+field: ID goType;
 
 structInit: STRUCT L_CURLY fieldInitList R_CURLY;
 fieldInitList: fieldInitPrime |;
@@ -240,18 +219,35 @@ fragment HEX_LIT: '0' [xX] [0-9a-fA-F]+;
 // is 0.e5 valid
 FLOAT_LIT: [0-9]+ '.' [0-9]* ([eE] [+-]? [0-9]+)?;
 
-STRING_LIT: '"' (~["\\] | ESC)* '"';
+STRING_LIT: '"' (~["\\\r\n] | ESC)* '"';
 fragment ESC: '\\' [ntr"\\];
 // boolean lit and nil lit already defined as keywords
 
 // char set and comments
 
 WS: [ \t\r\f]+ -> skip; // skip spaces, tabs 
-NL: '\n'; //skip newlines
+NL:
+	'\n' {
+    lst = [self.ID, self.RETURN, self.CONTINUE, self.BREAK, self.R_PAREN, self.R_CURLY, self.R_BRACKET, self.INT, self.FLOAT, self.BOOLEAN, self.STRING, self.INT_LIT, self.FLOAT_LIT, self.STRING_LIT, self.TRUE, self.FALSE, self.NIL];
+    for t in lst:
+        if self.lastTokenType == t: 
+            self.type = self.SEMICOLON;
+            self.lastTokenType = self.SEMICOLON;
+            self.text = ";" 
+            return super(MiniGoLexer,self).emit();
+    self.skip();};
 
 COMMENT: '//' ~[\r\n]* -> skip;
 COMMENT_MULT: '/*' (COMMENT_MULT | .)*? '*/' -> skip;
 
-ILLEGAL_ESCAPE: '"' (~["\\] | ESC)* ('\\' ~[ntr"\\]);
-UNCLOSE_STRING: '"' (~["\\] | ESC)* ('\n' | EOF);
-ERROR_CHAR: .;
+ILLEGAL_ESCAPE:
+	'"' (~["\\\r\n] | ESC)* '\\' ~[ntr"\\] {raise IllegalEscape(self.text)};
+UNCLOSE_STRING:
+	'"' (~["\\\r\n] | ESC)*? ('\r'? '\n' | EOF) {
+        text = self.text;
+        if text.endswith("\r\n"):
+            text = text[:-2]  # Remove Windows newline
+        elif text.endswith("\n"):
+            text = text[:-1]  # Remove Unix newline
+        raise UncloseString(text);};
+ERROR_CHAR: . { raise ErrorToken(self.text)};
