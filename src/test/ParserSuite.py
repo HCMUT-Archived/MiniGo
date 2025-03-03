@@ -19,7 +19,7 @@ class ParserSuite(unittest.TestCase):
     def test_004(self):
         """Literal"""
         self.assertTrue(TestParser.checkParser(
-            "const Votien = [1.]ID{1, 3};", "Error on line 1 col 16: 1.", 4))
+            "const Votien = [1.]ID{1, 3};", "Error on line 1 col 17: 1.", 4))
 
     def test_005(self):
         """Literal"""
@@ -88,7 +88,7 @@ class ParserSuite(unittest.TestCase):
         """declared Interface"""
         self.assertTrue(TestParser.checkParser("""
             type VoTien struct {}                                                                       
-        """, "Error on line 2 col 32: }", 15))
+        """, "Error on line 2 col 33: }", 15))
 
     def test_016(self):
         """declared Interface"""
@@ -103,7 +103,7 @@ class ParserSuite(unittest.TestCase):
                                         
             }
             type VoTien interface {}                                                                       
-        """, "Error on line 11 col 35: }", 16))
+        """, "Error on line 11 col 36: }", 16))
 
     def test_017(self):
         """declared_statement"""
@@ -181,49 +181,49 @@ class ParserSuite(unittest.TestCase):
         """Expressions"""
         self.assertTrue(TestParser.checkParser("""    
             var z VOTIEN 1;                         
-        """, "Error on line 2 col 25: 1", 23))
+        """, "Error on line 2 col 26: 1", 23))
 
     def test_024(self):
         """Expressions"""
         self.assertTrue(TestParser.checkParser("""    
             var z VOTIEN = int{1};                         
-        """, "Error on line 2 col 27: int", 24))
+        """, "Error on line 2 col 28: int", 24))
 
     def test_025(self):
         """Expressions"""
         self.assertTrue(TestParser.checkParser("""    
             var z VOTIEN = [true]int{1};                         
-        """, "Error on line 2 col 28: true", 25))
+        """, "Error on line 2 col 29: true", 25))
 
     def test_026(self):
         """Expressions"""
         self.assertTrue(TestParser.checkParser("""    
             var z VOTIEN = []int{1};                         
-        """, "Error on line 2 col 28: ]", 26))
+        """, "Error on line 2 col 29: ]", 26))
 
     def test_027(self):
         """Expressions"""
         self.assertTrue(TestParser.checkParser("""    
             var z VOTIEN = []int{1};                         
-        """, "Error on line 2 col 28: ]", 27))
+        """, "Error on line 2 col 29: ]", 27))
 
     def test_028(self):
         """Expressions"""
         self.assertTrue(TestParser.checkParser("""    
             var z VOTIEN = [2]int{1;                         
-        """, "Error on line 2 col 35: ;", 28))
+        """, "Error on line 2 col 36: ;", 28))
 
     def test_029(self):
         """Expressions"""
         self.assertTrue(TestParser.checkParser("""    
             var z VOTIEN = [2]int{1,3,4;                         
-        """, "Error on line 2 col 39: ;", 29))
+        """, "Error on line 2 col 40: ;", 29))
 
     def test_030(self):
         """Expressions"""
         self.assertTrue(TestParser.checkParser("""    
             var z VOTIEN = [2]int{};                         
-        """, "Error on line 2 col 34: }", 30))
+        """, "Error on line 2 col 35: }", 30))
 
     def test_031(self):
         """Expressions"""
@@ -241,7 +241,7 @@ class ParserSuite(unittest.TestCase):
         """Expressions"""
         self.assertTrue(TestParser.checkParser("""    
             var z VOTIEN = int {};                         
-        """, "Error on line 2 col 27: int", 33))
+        """, "Error on line 2 col 28: int", 33))
 
     def test_034(self):
         """Expressions"""
@@ -253,7 +253,7 @@ class ParserSuite(unittest.TestCase):
         """Expressions"""
         self.assertTrue(TestParser.checkParser("""    
             var z VOTIEN = ID {a: };                         
-        """, "Error on line 2 col 34: }", 35))
+        """, "Error on line 2 col 35: }", 35))
 
     def test_036(self):
         """Expressions"""
@@ -295,13 +295,13 @@ class ParserSuite(unittest.TestCase):
         """Expressions"""
         self.assertTrue(TestParser.checkParser("""    
             var z VOTIEN = a[2, 3];                         
-        """, "Error on line 2 col 30: ,", 42))
+        """, "Error on line 2 col 31: ,", 42))
 
     def test_043(self):
         """Expressions"""
         self.assertTrue(TestParser.checkParser("""    
             var z VOTIEN = a[];                         
-        """, "Error on line 2 col 29: ]", 43))
+        """, "Error on line 2 col 30: ]", 43))
 
     def test_044(self):
         """Expressions"""
@@ -325,7 +325,7 @@ class ParserSuite(unittest.TestCase):
         """Expressions"""
         self.assertTrue(TestParser.checkParser("""    
             var z VOTIEN = a.a.a[2].c[2].foo(1,);                         
-        """, "Error on line 2 col 47: )", 47))
+        """, "Error on line 2 col 48: )", 47))
 
     def test_048(self):
         """Expressions"""
@@ -373,13 +373,13 @@ class ParserSuite(unittest.TestCase):
         """Expressions"""
         self.assertTrue(TestParser.checkParser("""    
             const k =  int;                         
-        """, "Error on line 2 col 23: int", 55))
+        """, "Error on line 2 col 24: int", 55))
 
     def test_056(self):
         """Expressions"""
         self.assertTrue(TestParser.checkParser("""    
             const k =  (1, 2);                         
-        """, "Error on line 2 col 25: ,", 56))
+        """, "Error on line 2 col 26: ,", 56))
 
     def test_057(self):
         """Declared"""
@@ -397,7 +397,7 @@ class ParserSuite(unittest.TestCase):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""    
             var a [][3]int = 2 + 3 / 4;
-        """, "Error on line 2 col 19: ]", 59))
+        """, "Error on line 2 col 20: ]", 59))
 
     def test_060(self):
         """Declared"""
@@ -409,13 +409,13 @@ class ParserSuite(unittest.TestCase):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""    
             var a = ;
-        """, "Error on line 2 col 20: ;", 61))
+        """, "Error on line 2 col 21: ;", 61))
 
     def test_062(self):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""    
             var a 1;
-        """, "Error on line 2 col 18: 1", 662))
+        """, "Error on line 2 col 19: 1", 62))
 
     def test_063(self):
         """Declared"""
@@ -433,19 +433,19 @@ class ParserSuite(unittest.TestCase):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""    
             const a;
-        """, "Error on line 2 col 19: ;", 65))
+        """, "Error on line 2 col 20: ;", 65))
 
     def test_066(self):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""    
             const a := 1 + foo.a[2];
-        """, "Error on line 2 col 20: :=", 66))
+        """, "Error on line 2 col 21: :=", 66))
 
     def test_067(self):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""    
             const a =;
-        """, "Error on line 2 col 21: ;", 67))
+        """, "Error on line 2 col 22: ;", 67))
 
     def test_068(self):
         """Declared"""
@@ -476,13 +476,13 @@ class ParserSuite(unittest.TestCase):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""    
             func Add(a) [2]id {return ;}
-""", "Error on line 2 col 22: )", 71))
+""", "Error on line 2 col 23: )", 71))
 
     def test_072(self):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""    
             func Add(int a) int {return ;}
-""", "Error on line 2 col 21: int", 72))
+""", "Error on line 2 col 22: int", 72))
 
     def test_073(self):
         """Declared"""
@@ -494,13 +494,13 @@ class ParserSuite(unittest.TestCase):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""    
             func Add(a int, ) {}
-""", "Error on line 2 col 28: )", 74))
+""", "Error on line 2 col 29: )", 74))
 
     def test_075(self):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""    
             type Calculator struct {value int}
-""", "Error on line 2 col 45: }", 75))
+""", "Error on line 2 col 46: }", 75))
 
     def test_076(self):
         """Declared"""
@@ -526,7 +526,7 @@ class ParserSuite(unittest.TestCase):
                 c Calculator
                 c Cal a int;         
             }
-""", "Error on line 4 col 22: a", 78))
+""", "Error on line 4 col 23: a", 78))
 
     def test_079(self):
         """Declared"""
@@ -534,7 +534,7 @@ class ParserSuite(unittest.TestCase):
             type Calculator struct {
                 a int = 2;       
             }
-""", "Error on line 3 col 22: =", 79))
+""", "Error on line 3 col 23: =", 79))
 
     def test_080(self):
         """Declared"""
@@ -551,7 +551,7 @@ class ParserSuite(unittest.TestCase):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""    
             type Calculator interface {Reset()}
-""", "Error on line 2 col 46: }", 81))
+""", "Error on line 2 col 47: }", 81))
 
     def test_082(self):
         """Declared"""
@@ -580,13 +580,13 @@ class ParserSuite(unittest.TestCase):
             type Calculator interface {
                 Add(x int,c,d ID){}
         }
-""", "Error on line 3 col 33: {", 85))
+""", "Error on line 3 col 34: {", 85))
 
     def test_086(self):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""    
             type Calculator interface {Reset();} type Person struct{value int;}
-""", "Error on line 2 col 49: type", 86))
+""", "Error on line 2 col 50: type", 86))
 
     def test_087(self):
         """Declared"""
@@ -610,7 +610,7 @@ class ParserSuite(unittest.TestCase):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""
             func (c int) Add(x int) int {return ;}
-""", "Error on line 2 col 20: int", 999))
+""", "Error on line 2 col 21: int", 999))
 
     def test_090(self):
         """Declared"""
@@ -628,13 +628,13 @@ class ParserSuite(unittest.TestCase):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""
             func (c [2]c) Add(x int) {return ;}
-""", "Error on line 2 col 20: [", 92))
+""", "Error on line 2 col 21: [", 92))
 
     def test_093(self):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""
             func (int c) Add(x int) {return ;}
-""", "Error on line 2 col 18: int", 93))
+""", "Error on line 2 col 19: int", 93))
 
     def test_094(self):
         """Declared"""
@@ -651,21 +651,21 @@ class ParserSuite(unittest.TestCase):
             func Add(x int) {return ;}; var c int;
                                         
             var c int; type Calculator struct{c int;}; type Calculator struct{c int;} var c int;
-""", "Error on line 7 col 86: var", 95))
+""", "Error on line 7 col 87: var", 95))
 
     def test_096(self):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""
                                         
             var c int func (c c) Add(x int) {return ;}
-""", "Error on line 3 col 22: func", 96))
+""", "Error on line 3 col 23: func", 96))
 
     def test_097(self):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""
                                         
             const a = 2 func (c c) Add(x int) {return ;}
-""", "Error on line 3 col 24: func", 97))
+""", "Error on line 3 col 25: func", 97))
 
     def test_098(self):
         """Declared"""
@@ -678,7 +678,7 @@ class ParserSuite(unittest.TestCase):
         """Declared"""
         self.assertTrue(TestParser.checkParser("""
 
-""", "Error on line 3 col 0: <EOF>", 99))
+""", "Error on line 3 col 1: <EOF>", 99))
 
     def test_100(self):
         """Statement"""
@@ -729,7 +729,7 @@ class ParserSuite(unittest.TestCase):
                                     func Add() {
                                         const a = a[2].b
                                         var a = a[2].b var a = "s";           
-                                    };""", "Error on line 4 col 55: var", 106))
+                                    };""", "Error on line 4 col 56: var", 106))
 
     def test_107(self):
         """Statement"""
@@ -761,21 +761,21 @@ class ParserSuite(unittest.TestCase):
         self.assertTrue(TestParser.checkParser("""
                                     func Add() {
                                         a.foo() += 2;       
-                                    };""", "Error on line 3 col 48: +=", 110))
+                                    };""", "Error on line 3 col 49: +=", 110))
 
     def test_111(self):
         """Statement"""
         self.assertTrue(TestParser.checkParser("""
                                     func Add() {
                                         2 + 2 += 2;       
-                                    };""", "Error on line 3 col 40: 2", 111))
+                                    };""", "Error on line 3 col 41: 2", 111))
 
     def test_112(self):
         """Statement"""
         self.assertTrue(TestParser.checkParser("""
                                     func Add() {
                                        ID {id:2}.c += 2;       
-                                    };""", "Error on line 3 col 42: {", 112))
+                                    };""", "Error on line 3 col 43: {", 112))
 
     def test_113(self):
         """Statement"""
@@ -804,7 +804,7 @@ class ParserSuite(unittest.TestCase):
                                         if (x.foo().b[2]) {
                                             if (){return;}
                                         } 
-                                    };""", "Error on line 4 col 48: )", 115))
+                                    };""", "Error on line 4 col 49: )", 115))
 
     def test_116(self):
         """Statement"""
@@ -824,7 +824,7 @@ class ParserSuite(unittest.TestCase):
                                         if (x.foo().b[2]) {return
                                         } else if(){
                                         }
-                                    };""", "Error on line 4 col 50: )", 117))
+                                    };""", "Error on line 4 col 51: )", 117))
 
     def test_118(self):
         """Statement"""
@@ -857,14 +857,14 @@ class ParserSuite(unittest.TestCase):
         self.assertTrue(TestParser.checkParser("""
                                     func Add() {
                                         for int {return; }
-                                    };""", "Error on line 3 col 44: int", 121))
+                                    };""", "Error on line 3 col 45: int", 121))
 
     def test_122(self):
         """Statement"""
         self.assertTrue(TestParser.checkParser("""
                                     func Add() {
                                         for int {return; }
-                                    };""", "Error on line 3 col 44: int", 122))
+                                    };""", "Error on line 3 col 45: int", 122))
 
     def test_123(self):
         """Statement"""
@@ -891,7 +891,7 @@ class ParserSuite(unittest.TestCase):
                                         for const i = 0; i < 10; i += 1 {
                                             return; 
                                         }
-                                    };""", "Error on line 3 col 44: const", 125))
+                                    };""", "Error on line 3 col 45: const", 125))
 
     def test_126(self):
         """Statement"""
@@ -900,7 +900,7 @@ class ParserSuite(unittest.TestCase):
                                         for var i [2] int = 0; foo().a.b(); i[3] := 1 {
                                             return; 
                                         }
-                                    };""", "Error on line 3 col 77: [", 126))
+                                    };""", "Error on line 3 col 78: [", 126))
 
     def test_127(self):
         """Statement"""
@@ -909,7 +909,7 @@ class ParserSuite(unittest.TestCase):
                                         for var i [2]int = 0; foo().a.b();  {
                                             return; 
                                         }
-                                    };""", "Error on line 3 col 76: {", 127))
+                                    };""", "Error on line 3 col 77: {", 127))
 
     def test_128(self):
         """Statement"""
@@ -918,7 +918,7 @@ class ParserSuite(unittest.TestCase):
                                         for var i [2]int = 0; foo().a.b(); var i [2]int = 0 {
                                             return; 
                                         }
-                                    };""", "Error on line 3 col 75: var", 128))
+                                    };""", "Error on line 3 col 76: var", 128))
 
     def test_129(self):
         """Statement"""
@@ -940,7 +940,7 @@ class ParserSuite(unittest.TestCase):
                                         // value: 10, 20, 30
                                         return; 
                                         }
-                                    };""", "Error on line 3 col 52: ,", 130))
+                                    };""", "Error on line 3 col 53: ,", 130))
 
     def test_131(self):
         """Statement"""
@@ -951,7 +951,7 @@ class ParserSuite(unittest.TestCase):
                                         // value: 10, 20, 30
                                         return; 
                                         }
-                                    };""", "Error on line 3 col 52: ,", 131))
+                                    };""", "Error on line 3 col 53: ,", 131))
 
     def test_132(self):
         """Statement"""
@@ -961,7 +961,7 @@ class ParserSuite(unittest.TestCase):
                                         // index: 0, 1, 2
                                         return; 
                                         }
-                                    };""", "Error on line 3 col 56: [", 132))
+                                    };""", "Error on line 3 col 57: [", 132))
 
     def test_133(self):
         """Statement"""
@@ -1012,7 +1012,7 @@ class ParserSuite(unittest.TestCase):
                                     func Add() {
                                         return return 2 + a[2].b()
                     
-                                    };""", "Error on line 3 col 47: return", 138))
+                                    };""", "Error on line 3 col 48: return", 138))
 
     def test_139(self):
         """Statement"""
@@ -1020,7 +1020,7 @@ class ParserSuite(unittest.TestCase):
                                     func Add() {
                                         break continue
                     
-                                    };""", "Error on line 3 col 46: continue", 139))
+                                    };""", "Error on line 3 col 47: continue", 139))
 
     def test_140(self):
         """Statement"""
@@ -1043,7 +1043,7 @@ class ParserSuite(unittest.TestCase):
         self.assertTrue(TestParser.checkParser("""
                                     func Add() {
                                         (1+2).foo(2 + 3, a {a:2})
-                                    };""", "Error on line 3 col 40: (", 142))
+                                    };""", "Error on line 3 col 41: (", 142))
 
     def test_143(self):
         """Statement"""
@@ -1057,14 +1057,14 @@ class ParserSuite(unittest.TestCase):
         self.assertTrue(TestParser.checkParser("""
                                     func Add() {
                                         {break;}
-                                    };""", "Error on line 3 col 40: {", 144))
+                                    };""", "Error on line 3 col 41: {", 144))
 
     def test_145(self):
         """Statement"""
         self.assertTrue(TestParser.checkParser("""
                                         break;
                                     func Add() {
-                                    };""", "Error on line 2 col 40: break", 145))
+                                    };""", "Error on line 2 col 41: break", 145))
 
     def test_146(self):
         """Statement"""
@@ -1072,7 +1072,7 @@ class ParserSuite(unittest.TestCase):
                                     func Add() {
                                         return (2 + 3).b
                                         return -1.c
-                                    };""", "Error on line 4 col 50: c", 146))
+                                    };""", "Error on line 4 col 51: c", 146))
 
     def test_147(self):
         """Statement"""
@@ -1080,7 +1080,7 @@ class ParserSuite(unittest.TestCase):
                                     func Add() {
                                         return (2 + 3)[b]
                                         return -1.c[c]
-                                    };""", "Error on line 4 col 50: c", 147))
+                                    };""", "Error on line 4 col 51: c", 147))
 
     def test_148(self):
         """Statement"""
@@ -1089,26 +1089,26 @@ class ParserSuite(unittest.TestCase):
                                         if (1) {return struct;}
                                         else if(2) {return string;}
                                         else if(3) {reutrn int;}
-                                    };""", "Error on line 3 col 55: struct", 148))
+                                    };""", "Error on line 3 col 56: struct", 148))
 
     def test_149(self):
         """Statement"""
         self.assertTrue(TestParser.checkParser("""
                                     func Add() {
                                         if (1) {return;}else if(2) {return string;}else if(3) {reutrn int;}
-                                    };""", "Error on line 3 col 75: string", 149))
+                                    };""", "Error on line 3 col 76: string", 149))
 
     def test_150(self):
         """Statement"""
         self.assertTrue(TestParser.checkParser("""
                                     func Add() {
                                         if (1) {return;}else if(2) {return string;}else if(3) {reutrn int;}else  {return struct;}
-                                    };""", "Error on line 3 col 75: string", 150))
+                                    };""", "Error on line 3 col 76: string", 150))
 
     def test_151(self):
         """array_literal"""
         self.assertTrue(TestParser.checkParser("""const a = [1]int{1+1}                    
-""", "Error on line 1 col 18: +", 151))
+""", "Error on line 1 col 19: +", 151))
 
     def test_152(self):
         """array_literal"""
@@ -1118,12 +1118,12 @@ class ParserSuite(unittest.TestCase):
     def test_153(self):
         """array_literal"""
         self.assertTrue(TestParser.checkParser("""const a = [1]int{}                    
-""", "Error on line 1 col 17: }", 153))
+""", "Error on line 1 col 18: }", 153))
 
     def test_154(self):
         """array_literal"""
         self.assertTrue(TestParser.checkParser("""const a = [1]int{[1]int{1}}                    
-""", "Error on line 1 col 17: [", 154))
+""", "Error on line 1 col 18: [", 154))
 
     def test_155(self):
         """array_literal"""
@@ -1157,7 +1157,7 @@ class ParserSuite(unittest.TestCase):
         type Person struct {
             c int  c int;                                                    
         }      
-""", "Error on line 3 col 19: c", 998))
+""", "Error on line 3 col 20: c", 998))
 
     def test_159(self):
         self.assertTrue(TestParser.checkParser("""
@@ -1174,7 +1174,7 @@ class ParserSuite(unittest.TestCase):
                     return
                 }
             };  
-""", "Error on line 10 col 27: ;", 159))
+""", "Error on line 10 col 29: ;", 159))
 
     def test_160(self):
         self.assertTrue(TestParser.checkParser("""
@@ -1183,7 +1183,7 @@ class ParserSuite(unittest.TestCase):
                 else if (1)
                 {}
             };  
-""", "Error on line 4 col 16: else", 160))
+""", "Error on line 4 col 17: else", 160))
 
     def test_161(self):
         self.assertTrue(TestParser.checkParser("""
@@ -1238,7 +1238,7 @@ class ParserSuite(unittest.TestCase):
     def test_167(self):
         self.assertTrue(TestParser.checkParser("""
         const a = a.2; 
-""", "Error on line 2 col 20: 2", 167))
+""", "Error on line 2 col 21: 2", 167))
 
     def test_168(self):
         self.assertTrue(TestParser.checkParser("""
@@ -1248,12 +1248,12 @@ class ParserSuite(unittest.TestCase):
     def test_169(self):
         self.assertTrue(TestParser.checkParser("""
         const a = [1]int{1, 2 
-""", "Error on line 2 col 30: ;", 169))
+""", "Error on line 2 col 32: ;", 169))
 
     def test_170(self):
         self.assertTrue(TestParser.checkParser("""
         const a = foo(1, 2
-""", "Error on line 2 col 26: ;", 170))
+""", "Error on line 2 col 28: ;", 170))
 
     def test_171(self):
         """Statement"""
@@ -1262,7 +1262,7 @@ class ParserSuite(unittest.TestCase):
                                         for var i [2] int = 0; foo().a.b(); i.b := 1 {
                                             return; 
                                         }
-                                    };""", "Error on line 3 col 77: .", 171))
+                                    };""", "Error on line 3 col 78: .", 171))
 
     def test_172(self):
         """Statement"""
@@ -1271,7 +1271,7 @@ class ParserSuite(unittest.TestCase):
                                         for var i [2] int = 0; foo().a.b(); i[2].c += 1 {
                                             return; 
                                         }
-                                    };""", "Error on line 3 col 77: [", 172))
+                                    };""", "Error on line 3 col 78: [", 172))
 
     def test_173(self):
         """Statement"""
@@ -1280,7 +1280,7 @@ class ParserSuite(unittest.TestCase):
                                         for i[2] := 1; foo().a.b(); i := 1 {
                                             return; 
                                         }
-                                    };""", "Error on line 3 col 49: :=", 173))
+                                    };""", "Error on line 3 col 50: :=", 173))
 
     def test_174(self):
         """Statement"""
@@ -1289,7 +1289,7 @@ class ParserSuite(unittest.TestCase):
                                         for i.c[2] := 1; foo().a.b(); i := 1 {
                                             return; 
                                         }
-                                    };""", "Error on line 3 col 51: :=", 174))
+                                    };""", "Error on line 3 col 52: :=", 174))
 
     def test_175(self):
         """Statement"""
@@ -1298,7 +1298,7 @@ class ParserSuite(unittest.TestCase):
                                         for i.c[2] := 1; foo().a.b(); i := 1 {
                                             return; 
                                         }
-                                    };""", "Error on line 3 col 51: :=", 175))
+                                    };""", "Error on line 3 col 52: :=", 175))
 
     def test_176(self):
         self.assertTrue(TestParser.checkParser("""
@@ -1307,7 +1307,7 @@ class ParserSuite(unittest.TestCase):
                 return "Hello, " + p.name
             };                                                 
         }      
-""", "Error on line 3 col 12: func", 176))
+""", "Error on line 3 col 13: func", 176))
 
     def test_177(self):
         """Statement"""
@@ -1316,7 +1316,7 @@ class ParserSuite(unittest.TestCase):
                                         for var b; foo().a.b(); i := 1 {
                                             return; 
                                         }
-                                    };""", "Error on line 3 col 49: ;", 177))
+                                    };""", "Error on line 3 col 50: ;", 177))
 
     def test_178(self):
         """Statement"""
@@ -1325,7 +1325,7 @@ class ParserSuite(unittest.TestCase):
                                         for var b int; foo().a.b(); i := 1 {
                                             return; 
                                         }
-                                    };""", "Error on line 3 col 53: ;", 178))
+                                    };""", "Error on line 3 col 54: ;", 178))
 
     def test_179(self):
         """Statement"""
@@ -1344,17 +1344,17 @@ class ParserSuite(unittest.TestCase):
     def test_181(self):
         self.assertTrue(TestParser.checkParser("""
                                             var a;
-                                        """, "Error on line 2 col 49: ;", 181))
+                                        """, "Error on line 2 col 50: ;", 181))
 
     def test_182(self):
         self.assertTrue(TestParser.checkParser("""
                                             var a = {1, 2};
-                                        """, "Error on line 2 col 52: {", 182))
+                                        """, "Error on line 2 col 53: {", 182))
 
     def test_183(self):
         self.assertTrue(TestParser.checkParser("""
                                             var a = {1, 2};
-                                        """, "Error on line 2 col 52: {", 183))
+                                        """, "Error on line 2 col 53: {", 183))
 
     def test_184(self):
         """Statement"""
@@ -1363,7 +1363,7 @@ class ParserSuite(unittest.TestCase):
                                         {
                                             return;
                                         }
-                                    };""", "Error on line 3 col 40: {", 184))
+                                    };""", "Error on line 3 col 41: {", 184))
 
     def test_185(self):
         self.assertTrue(TestParser.checkParser("""

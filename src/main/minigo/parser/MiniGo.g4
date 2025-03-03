@@ -19,121 +19,138 @@ options{
 	language = Python3;
 }
 
-// parser rules
+// non empty list of x >>> xlist : x xlist | x;
+
+// nullable list of x >>> xlist : x xlist | ;
+
+// non empty list of x separated by y >>> xlist : x y xlist | x;
+
+// nullable list of x separated by y >>> xlist : xprime | ; xprime : x y xprime | x;
+
+/******************************************************************************/
+/*                                                                            */
+/*                     PARSER RULES                                           */
+/*                                                                            */
+/******************************************************************************/
 
 program: declList EOF;
 
-declList: decl SEMICOLON declList | decl;
-decl: constDecl | varDecl | typeDecl | funcDecl | methodDecl;
+// non empty list of x >>> xlist : x xlist | x;
+declList: decl declList | decl;
+decl: (varDecl | constDecl | funcDecl | methodDecl | typeDecl) SEMICOLON;
 
 constDecl: CONST ID INIT expression;
-varDecl: VAR ID goType? (INIT expression)?;
-typeDecl: TYPE ID (structType | interfaceType);
-funcDecl: FUNC ID L_CURLY paramsList R_CURLY goType? blockStmt;
-methodDecl:
-	FUNC receiver ID L_CURLY paramsList R_CURLY goType? blockStmt;
+varDecl: VAR ID (goType (INIT expression)? | INIT expression);
+funcDecl: FUNC ID L_PAREN paramsList R_PAREN goType? block;
+methodDecl: FUNC L_PAREN receiver R_PAREN ID L_PAREN paramsList R_PAREN goType? block;
+
+receiver: ID ID;
+
+// nullable list of x separated by y >>> xlist : xprime | ; xprime : x y xprime | x;
 paramsList: paramPrime |;
 paramPrime: param COMMA paramPrime | param;
 param: identifierList goType;
-receiver: L_PAREN ID ID R_PAREN;
 
-// array type
-arrayType: L_BRACKET (INT_LIT | ID) R_BRACKET goType;
-goType: primType | compType | arrayType | userDefType;
+// non empty list of x separated by y >>> xlist : x y xlist | x;
+identifierList: ID COMMA identifierList | ID;
 
-primType: STRING | INT | FLOAT | BOOLEAN;
-compType: STRUCT | INTERFACE;
-userDefType: ID;
+typeDecl: TYPE ID (structType | interfaceType);
 
-// struct type not finished need to change to list of struct field
-structType: STRUCT L_CURLY fieldList R_CURLY;
-fieldList: field SEMICOLON fieldList | field;
-field: ID goType;
+/******************************************************************************/
+// =================== TYPING ==================================================
 
-structInit: STRUCT L_CURLY fieldInitList R_CURLY;
-fieldInitList: fieldInitPrime |;
-fieldInitPrime: fieldInit COMMA fieldInitPrime | fieldInit;
-fieldInit: ID COLON expression;
+goType: STRING | INT | FLOAT | BOOLEAN | arrayType | ID;
 
-// interface type
-interfaceType: INTERFACE L_CURLY methodList R_CURLY;
-methodList: ID L_PAREN paramsList R_PAREN;
+// =================== ARRAY TYPE ==============================================
 
-primaryExpr: literal | .;
+arrayType: dimensionList goType;
+// non empty list of x >>> xlist : x xlist | x;
+dimensionList: dimension dimensionList | dimension;
+dimension: L_BRACKET (INT_LIT | ID) R_BRACKET;
 
-// statements
+// =================== STRUCT TYPE =============================================
 
-statementList: statementPrime |;
-statementPrime: statement SEMICOLON statementPrime | statement;
-statement: (decl | assignStmt);
-assignStmt:
-	lhs assign_op = (
-		ASSIGN
-		| ADD_ASSIGN
-		| SUB_ASSIGN
-		| MUL_ASSIGN
-		| DIV_ASSIGN
-		| MOD_ASSIGN
-	) expression;
-lhs: ID | ID DOT ID | ID L_BRACKET expression R_BRACKET;
+// must have at least 1 property, can have no methods
+structType: STRUCT L_CURLY structFieldList R_CURLY;
+// non empty list of x >>> xlist : x xlist | x;
+structFieldList: structField structFieldList | structField;
+structField: structProp | structMethod;
+structProp: ID goType SEMICOLON;
+structMethod: methodDecl SEMICOLON;
 
-ifStmt:
-	IF expression blockStmt (ELSE IF blockStmt) (ELSE blockStmt)?;
+// =================== INTERFACE TYPE ==========================================
 
-forStmt: FOR (expression | forClause | rangeClause) blockStmt;
-forClause: . SEMICOLON expression SEMICOLON .;
-rangeClause: .;
+interfaceType: INTERFACE L_CURLY interfaceMethodList R_CURLY;
+// non empty list of x >>> xlist : x xlist | x;
+interfaceMethodList: interfaceMethod interfaceMethodList | interfaceMethod;
+interfaceMethod: ID L_PAREN paramsList R_PAREN goType? SEMICOLON;
+
+/******************************************************************************/
+// =================== STATEMENTS ==============================================
+
+// every statement ends with a semicolon
+
+block: L_CURLY statementList R_CURLY;
+// nullable list of x >>> xlist : x xlist | ;
+statementList: statement statementList |;
+statement: (varDecl | constDecl | assignStmt | ifStmt | forStmt | breakStmt | continueStmt | callStmt | returnStmt) SEMICOLON;
+assignStmt: lhs ( ASSIGN | ADD_ASSIGN | SUB_ASSIGN | MUL_ASSIGN | DIV_ASSIGN | MOD_ASSIGN) expression;
+lhs: ID | elemAccess;
+elemAccess: elemAccess L_BRACKET expression R_BRACKET | elemAccess DOT elemAccess | ID;
+
+ifStmt: IF L_PAREN expression R_PAREN block (ELSE (ifStmt | block))?;
+
+forStmt: FOR (expression | forClause | forRangeClause) block;
+forClause: forInit SEMICOLON expression SEMICOLON forAssignStmt;
+forInit: forAssignStmt | forDeclaration;
+forAssignStmt: ID (ASSIGN | ADD_ASSIGN | SUB_ASSIGN | MUL_ASSIGN | DIV_ASSIGN | MOD_ASSIGN) expression;
+forDeclaration: VAR ID goType? INIT expression;
+forRangeClause: ID COMMA ID ASSIGN RANGE expression;
 
 breakStmt: BREAK;
 continueStmt: CONTINUE;
-callStmt:;
+callStmt: methodCall | functionCall;
+methodCall: (ID | elemAccess) DOT ID L_PAREN expressionList R_PAREN;
 functionCall: ID L_PAREN expressionList R_PAREN;
-methodCall: ID DOT ID L_PAREN expressionList R_PAREN;
 
 returnStmt: RETURN expression?;
-blockStmt: L_CURLY statement* R_CURLY;
 
-identifierList: ID COMMA identifierList | ID;
+/******************************************************************************/
+// =================== EXPRESSIONS =============================================
 
-arrayLit: L_CURLY arrayLitElemList R_CURLY;
+arrayLit: arrayType L_CURLY arrayLitElemList R_CURLY;
 arrayLit_: L_CURLY arrayLitElemList R_CURLY;
-// nullable, separated by comma
-arrayLitElemList: arrayLitElemPrime |;
-arrayLitElemPrime:
-	arrayLitElem COMMA arrayLitElemPrime
-	| arrayLitElem;
+// non empty list of x separated by y >>> xlist : x y xlist | x;
+arrayLitElemList: arrayLitElem COMMA arrayLitElemList | arrayLitElem;
+arrayLitElem: ID | INT_LIT | FLOAT_LIT | STRING_LIT | TRUE | FALSE | NIL | arrayLit_ | structLit;
 
-literal:
-	INT_LIT
-	| FLOAT_LIT
-	| STRING_LIT
-	| TRUE
-	| FALSE
-	| NIL
-	| arrayLit;
+// nullable list of x separated by y >>> xlist : xprime | ; xprime : x y xprime | x;
+structLit: ID L_CURLY structLitFieldList R_CURLY;
+structLitFieldList: structLitFieldPrime |;
+structLitFieldPrime: structLitField COMMA structLitFieldPrime | structLitField;
+structLitField: ID COLON expression;
 
-arrayLitElem:
-	INT_LIT
-	| FLOAT_LIT
-	| STRING_LIT
-	| TRUE
-	| FALSE
-	| NIL
-	| arrayLit_;
+literal: INT_LIT | FLOAT_LIT | STRING_LIT | TRUE | FALSE | NIL | arrayLit | structLit;
 
-// nullable separated by comma
+// nullable list of x separated by y >>> xlist : xprime | ; xprime : x y xprime | x;
 expressionList: expressionPrime |;
 expressionPrime: expression COMMA expressionPrime | expression;
-expression:
-	primaryExpr
-	| expression L_BRACKET expression R_BRACKET // array access
-	| expression DOT ID // struct field access
-	| unary_op = (NOT | SUB) expression
-	| expression mul_op = (MUL | DIV | MOD) expression
-	| expression add_op = (ADD | SUB) expression
-	| expression rel_op = (EQ | NEQ | LT | LE | GT | GE) expression
-	| expression AND expression
-	| expression OR expression;
+expression: expOr;
+expOr: expAnd | expOr OR expAnd;
+expAnd: expRel | expAnd AND expRel;
+expRel: expAdd | expRel (EQ | NEQ | LT | LE | GT | GE) expAdd;
+expAdd: expMul | expAdd (ADD | SUB) expMul;
+expMul: expUnary | expMul (MUL | DIV | MOD) expUnary;
+expUnary: expAcc | (NOT | SUB) expUnary;
+expAcc: operand | expAcc L_BRACKET expression R_BRACKET | expAcc DOT (ID | functionCall);
+
+operand: L_PAREN expression R_PAREN | ID | literal | callStmt;
+
+/******************************************************************************/
+/*                                                                            */
+/*                     LEXER RULES                                            */
+/*                                                                            */
+/******************************************************************************/
 
 // keywords
 IF: 'if';
@@ -240,8 +257,7 @@ NL:
 COMMENT: '//' ~[\r\n]* -> skip;
 COMMENT_MULT: '/*' (COMMENT_MULT | .)*? '*/' -> skip;
 
-ILLEGAL_ESCAPE:
-	'"' (~["\\\r\n] | ESC)* '\\' ~[ntr"\\] {raise IllegalEscape(self.text)};
+ILLEGAL_ESCAPE: '"' (~["\\\r\n] | ESC)* '\\' ~[ntr"\\] {raise IllegalEscape(self.text)};
 UNCLOSE_STRING:
 	'"' (~["\\\r\n] | ESC)*? ('\r'? '\n' | EOF) {
         text = self.text;
