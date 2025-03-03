@@ -95,8 +95,7 @@ block: L_CURLY statementList R_CURLY;
 statementList: statement statementList |;
 statement: (varDecl | constDecl | assignStmt | ifStmt | forStmt | breakStmt | continueStmt | callStmt | returnStmt) SEMICOLON;
 assignStmt: lhs ( ASSIGN | ADD_ASSIGN | SUB_ASSIGN | MUL_ASSIGN | DIV_ASSIGN | MOD_ASSIGN) expression;
-lhs: ID | elemAccess;
-elemAccess: elemAccess L_BRACKET expression R_BRACKET | elemAccess DOT elemAccess | ID;
+lhs: lhs L_BRACKET expression R_BRACKET | lhs DOT lhs | ID;
 
 ifStmt: IF L_PAREN expression R_PAREN block (ELSE (ifStmt | block))?;
 
@@ -110,7 +109,7 @@ forRangeClause: ID COMMA ID ASSIGN RANGE expression;
 breakStmt: BREAK;
 continueStmt: CONTINUE;
 callStmt: methodCall | functionCall;
-methodCall: (ID | elemAccess) DOT ID L_PAREN expressionList R_PAREN;
+methodCall: (ID | lhs) DOT ID L_PAREN expressionList R_PAREN;
 functionCall: ID L_PAREN expressionList R_PAREN;
 
 returnStmt: RETURN expression?;
